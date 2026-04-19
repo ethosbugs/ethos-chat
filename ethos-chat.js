@@ -12,10 +12,11 @@ import {
   update,
   query,
   limitToFirst,
-  remove
+  remove,
+  set
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-// --- CONFIGURA AIXÒ AMB LES TEVES CLAUS ---
+// --- CLAUS ---
 const firebaseConfig = {
   apiKey: "AIzaSyDpls-yeDmNRoDLq4jXUCKbaiip0A9oXmQ",
   authDomain: "ethos-chat-dfe0e.firebaseapp.com",
@@ -26,6 +27,7 @@ const firebaseConfig = {
   appId: "1:1033379402899:web:e0a71148c2c1e0a55e2966",
   measurementId: "G-GWK6PBTJV7"
 };
+
 // --- Inicialització Firebase ---
 let app, db;
 let isOnline = false;
@@ -72,22 +74,41 @@ function sanitizeKey(k) {
   return String(k).replace(/[.#$[\]]/g, "_");
 }
 
-function getUserName() {
-  if (localUserName) return localUserName;
-  const stored = localStorage.getItem("ethos_chat_username");
-  if (stored) {
-    localUserName = stored;
-    return localUserName;
-  }
-  const randomName = `User#${Math.floor(1000 + Math.random() * 9000)}`;
-  localUserName = randomName;
-  localStorage.setItem("ethos_chat_username", randomName);
-  return localUserName;
-}
-
 function formatTime(ts) {
   const d = new Date(ts);
   return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
+// --- REGISTRE DE NOM ÚNIC ---
+async function registerUsername() {
+  const saved = localStorage.getItem("ethos_username");
+  if (saved) return saved;
+
+  let name = prompt("Introdueix el teu nom (només un cop):");
+  if (!name) return registerUsername();
+
+  name = name.trim();
+
+  const userRef = ref(db, "users/" + name);
+  const snap = await get(userRef);
+
+  if (snap.exists()) {
+    alert("Aquest nom ja està registrat. Tria’n un altre.");
+    return registerUsername();
+  }
+
+  await set(userRef, {
+    createdAt: Date.now()
+  });
+
+  localStorage.setItem("ethos_username", name);
+  return name;
+}
+
+async function getUserName() {
+  if (localUserName) return localUserName;
+  localUserName = await registerUsername();
+  return localUserName;
 }
 
 // --- Estat de connexió ---
@@ -119,7 +140,7 @@ function buildMessageHTML(data, isSelf) {
 
   let reactionsHtml = `<div class="reactions-container">`;
   if (data.reactions) {
-    const myName = getUserName();
+    const myName = localUserName;
     for (const emoji in data.reactions) {
       const users = data.reactions[emoji] || [];
       const count = users.length;
@@ -160,9 +181,8 @@ function buildMessageHTML(data, isSelf) {
 
 // --- Afegir listeners a un <li> ---
 function attachMessageListeners(li, messageId, data) {
-  const myName = getUserName();
+  const myName = localUserName;
 
-  // Click → reply
   li.addEventListener("click", () => {
     replyingTo = {
       id: messageId,
@@ -173,7 +193,6 @@ function attachMessageListeners(li, messageId, data) {
     chatInputEl?.focus();
   });
 
-  // Reaccions
   li.querySelectorAll(".reaction, .emoji-picker span").forEach(el => {
     el.addEventListener("click", e => {
       e.stopPropagation();
@@ -212,7 +231,7 @@ function renderReplyingTo() {
 // --- Reaccions ---
 async function toggleReaction(messageId, emoji) {
   if (!db || !chatRef) return;
-  const myName = getUserName();
+  const myName = localUserName;
   const reactionRef = ref(db, `ethos_chat/${messageId}/reactions/${emoji}`);
   const snap = await get(reactionRef);
   let users = snap.val() || [];
@@ -234,7 +253,7 @@ async function enviarMissatge() {
   const text = chatInputEl.value.trim();
   if (!text) return;
 
-  const nombre = getUserName();
+  const nombre = await getUserName();
   const messageData = {
     nombre,
     texto: text,
@@ -274,7 +293,7 @@ if (db && chatRef && chatMessagesEl) {
   onChildAdded(chatRef, snap => {
     const data = snap.val();
     const id = snap.key;
-    const myName = getUserName();
+    const myName = localUserName;
     const isSelf = data.nombre === myName;
 
     const li = document.createElement("li");
@@ -289,14 +308,13 @@ if (db && chatRef && chatMessagesEl) {
     chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
   });
 
-  // Actualitzacions (reaccions, etc.)
   onChildChanged(chatRef, snap => {
     const data = snap.val();
     const id = snap.key;
     const li = document.getElementById(id);
     if (!li) return;
 
-    const myName = getUserName();
+    const myName = localUserName;
     const isSelf = data.nombre === myName;
 
     const isAtBottom =
@@ -324,7 +342,7 @@ if (chatInputEl) {
   });
 }
 
-// --- Clear local (només DOM, no Firebase) ---
+// --- Clear local ---
 if (clearChatBtn && chatMessagesEl) {
   clearChatBtn.addEventListener("click", () => {
     chatMessagesEl.innerHTML = "";
@@ -369,7 +387,7 @@ function drawMatrix() {
   const style = getComputedStyle(document.body);
   const color = style.getPropertyValue("--matrix-color") || "#00ff88";
 
-  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.18)"; // ← FIX: s’esvaeix bé
   ctx.fillRect(0, 0, matrixWidth, matrixHeight);
 
   ctx.fillStyle = color.trim();
@@ -380,13 +398,13 @@ function drawMatrix() {
     const x = i * fontSize;
     const y = drops[i] * fontSize;
 
-    ctx.globalAlpha = 0.12; // opacitat baixa
+    ctx.globalAlpha = 0.12;
     ctx.fillText(text, x, y);
 
     if (y > matrixHeight && Math.random() > 0.975) {
       drops[i] = 0;
     } else {
-      drops[i] += 1; // velocitat mitjana
+      drops[i] += 1;
     }
   }
 
