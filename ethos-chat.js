@@ -369,7 +369,7 @@ function drawMatrix() {
   const style = getComputedStyle(document.body);
   const color = style.getPropertyValue("--matrix-color") || "#00ff88";
 
-  ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
+  ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
   ctx.fillRect(0, 0, matrixWidth, matrixHeight);
 
   ctx.fillStyle = color.trim();
