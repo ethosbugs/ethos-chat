@@ -12,7 +12,6 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 🔥 POSA AQUÍ EL TEU firebaseConfig EXACTE
 const firebaseConfig = {
   apiKey: "AIzaSyDpls-yeDmNRoDLq4jXUCKbaiip0A9oXmQ",
   authDomain: "ethos-chat-dfe0e.firebaseapp.com",
@@ -49,10 +48,7 @@ const profileMessages = document.getElementById("profileMessages");
 const profileId = document.getElementById("profileId");
 const profileAvatar = document.getElementById("profileAvatar");
 
-console.log("nameConfirm:", nameConfirm);
-console.log("nameModal:", nameModal);
-console.log("nameInput:", nameInput);
-
+const clearLocal = document.getElementById("clearLocal");
 
 // ------------------------------
 // Usuari local
@@ -67,15 +63,17 @@ if (!user) {
 }
 
 // ------------------------------
-// Confirmar nom
+// Confirmar nom (ARREGLAT)
 // ------------------------------
 nameConfirm.addEventListener("click", () => {
+  console.log("CLICK DETECTAT");
+
   const name = nameInput.value.trim();
   if (!name) return;
 
   user = {
     name,
-    internalId: crypto.randomUUID(),
+    internalId: Math.random().toString(36).substring(2, 12), // 🔥 substitució segura
     createdAt: Date.now(),
     lastSeen: Date.now(),
     messagesSent: 0,
@@ -83,8 +81,9 @@ nameConfirm.addEventListener("click", () => {
   };
 
   localStorage.setItem("ethosUser", JSON.stringify(user));
-  nameModal.classList.add("hidden");
   updateProfileUI();
+
+  nameModal.classList.add("hidden");
 });
 
 // ------------------------------
@@ -123,10 +122,6 @@ async function sendMessage() {
 }
 
 chatSend.addEventListener("click", sendMessage);
-nameConfirm.addEventListener("click", () => {
-  console.log("CLICK DETECTAT");
-});
-
 chatInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendMessage();
 });
@@ -175,4 +170,12 @@ settingsBtn.addEventListener("click", () => {
 
 closeSettings.addEventListener("click", () => {
   settingsPanel.classList.add("hidden");
+});
+
+// ------------------------------
+// Clear local
+// ------------------------------
+clearLocal.addEventListener("click", () => {
+  localStorage.removeItem("ethosUser");
+  location.reload();
 });
