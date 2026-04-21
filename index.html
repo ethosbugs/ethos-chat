@@ -1,105 +1,68 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ETHOS_CHAT</title>
-  <link rel="stylesheet" href="ethos-chat.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETHOS_CHAT</title>
+    <link rel="stylesheet" href="ethos-chat.css">
 </head>
-<body class="theme-ethos-green">
 
-  <canvas id="matrix-canvas"></canvas>
+<body>
 
-  <div class="ethos-chat-shell">
-
-    <header class="chat-header">
-      <div class="chat-header-left">
-        <img
-          src="https://cdn-1.webcatalog.io/catalog/hacker-typer/hacker-typer-icon.png"
-          class="chat-logo"
-          alt="ETHOS Logo"
-        />
-        <div class="chat-title-block">
-          <h1 class="chat-title">ETHOS_CHAT</h1>
-          <span id="chatStatus" class="chat-status offline">● Offline</span>
+    <!-- MODAL NOM -->
+    <div id="nameModal" class="modal">
+        <div class="modal-content">
+            <h2>Benvingut a ETHOS_CHAT</h2>
+            <p>Introdueix el teu nom:</p>
+            <input id="nameInput" type="text" placeholder="El teu nom...">
+            <button id="nameConfirm">Confirmar</button>
         </div>
-      </div>
+    </div>
 
-      <div class="chat-header-right">
-        <button id="clearChatBtn" class="btn ghost">Clear local</button>
-        <button id="settingsBtn" class="btn">Settings</button>
-      </div>
-    </header>
+    <!-- CONTENIDOR PRINCIPAL -->
+    <div class="container">
 
-    <main class="chat-main">
-      <ul id="chatMessages" class="chat-messages"></ul>
-    </main>
+        <!-- XAT -->
+        <div class="chat-box">
+            <div class="chat-header">
+                <h2>ETHOS_CHAT</h2>
+                <span id="chatStatus" class="offline">● Offline</span>
+            </div>
 
-    <footer class="chat-input-bar">
-      <input
-        id="chatInput"
-        type="text"
-        placeholder="Escriu un missatge..."
-        autocomplete="off"
-      />
-      <button id="chatSend" class="btn primary">Enviar</button>
-    </footer>
+            <ul id="chatMessages" class="chat-messages"></ul>
 
-  </div>
-  <div id="settingsPanel" class="settings-panel hidden">
-    <div class="settings-inner">
+            <div class="chat-input-area">
+                <input id="chatInput" type="text" placeholder="Escriu un missatge...">
+                <button id="chatSend">Enviar</button>
+            </div>
 
-      <div class="settings-header">
-        <h2>Settings</h2>
-        <button id="closeSettings" class="btn ghost small">✕</button>
-      </div>
+            <div class="chat-tools">
+                <button id="clearLocal">Clear local</button>
+                <button id="settingsBtn">Settings</button>
+            </div>
+        </div>
 
-      <div class="settings-section">
-        <h3>Perfil ETHOS</h3>
+        <!-- PANEL SETTINGS -->
+        <div id="settingsPanel" class="settings hidden">
+            <h2>Perfil ETHOS</h2>
 
-        <div class="profile-block">
-          <div class="profile-avatar-wrap">
-            <img id="profileAvatar" class="profile-avatar" alt="Avatar ETHOS" />
-          </div>
+            <img id="profileAvatar" class="avatar" src="" alt="Avatar">
 
-          <div class="profile-data">
             <p><strong>Nom:</strong> <span id="profileName">-</span></p>
             <p><strong>Última connexió:</strong> <span id="profileLastSeen">-</span></p>
-            <p><strong>Missatges enviats:</strong> <span id="profileMessages">0</span></p>
+            <p><strong>Missatges enviats:</strong> <span id="profileMessages">-</span></p>
             <p><strong>ID intern:</strong> <span id="profileId">-</span></p>
-          </div>
-        </div>
-      </div>
 
-      <div class="settings-section">
-        <h3>Theme</h3>
+            <h3>Temes</h3>
+            <button class="theme-btn" id="themeGreen">ETHOS Neon Green</button>
+            <button class="theme-btn" id="themeBlue">ETHOS Blue Cyber</button>
+            <button class="theme-btn" id="themePurple">ETHOS Purple Void</button>
 
-        <div class="theme-buttons">
-          <button class="theme-btn" data-theme="theme-ethos-green">ETHOS Neon Green</button>
-          <button class="theme-btn" data-theme="theme-ethos-blue">ETHOS Blue Cyber</button>
-          <button class="theme-btn" data-theme="theme-ethos-purple">ETHOS Purple Void</button>
+            <button id="closeSettings" class="close-btn">Tancar</button>
         </div>
-      </div>
 
     </div>
-  </div>
 
-  <div id="nameModal" class="name-modal hidden">
-    <div class="name-modal-inner">
-      <img
-        src="https://cdn-1.webcatalog.io/catalog/hacker-typer/hacker-typer-icon.png"
-        class="name-modal-logo"
-        alt="ETHOS Logo"
-      />
-
-      <h2>Benvingut a ETHOS_CHAT</h2>
-      <p>Introdueix el teu nom:</p>
-
-      <input id="nameInput" type="text" placeholder="El teu nom..." autocomplete="off" />
-      <button id="nameConfirm" class="btn primary">Confirmar</button>
-    </div>
-  </div>
-  <script type="module" src="ethos-chat.js"></script>
-
+    <script type="module" src="ethos-chat.js"></script>
 </body>
 </html>
