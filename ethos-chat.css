@@ -1,6 +1,3 @@
-/* ------------------------------
-   RESET
------------------------------- */
 * {
     margin: 0;
     padding: 0;
@@ -17,17 +14,11 @@ body {
     height: 100vh;
 }
 
-/* ------------------------------
-   CONTENIDOR PRINCIPAL
------------------------------- */
 .container {
     display: flex;
     gap: 20px;
 }
 
-/* ------------------------------
-   CHAT BOX
------------------------------- */
 .chat-box {
     width: 420px;
     background: #050505;
@@ -64,9 +55,6 @@ body {
     border-bottom: 1px solid #0a0;
 }
 
-/* ------------------------------
-   INPUT + BOTÓ ENVIAR
------------------------------- */
 .chat-input-area {
     display: flex;
     gap: 10px;
@@ -94,9 +82,6 @@ body {
     background: #9f9;
 }
 
-/* ------------------------------
-   BOTONS EXTRA
------------------------------- */
 .chat-tools {
     display: flex;
     justify-content: space-between;
@@ -115,9 +100,6 @@ body {
     color: #000;
 }
 
-/* ------------------------------
-   SETTINGS PANEL
------------------------------- */
 .settings {
     width: 300px;
     background: #050505;
@@ -138,9 +120,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* ------------------------------
-   TEMES
------------------------------- */
 .theme-btn {
     width: 100%;
     padding: 8px;
@@ -176,7 +155,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* 🔥 AIXÒ ÉS EL QUE FALTAVA */
+    z-index: 9999;
 }
 
 .modal-content {
@@ -185,7 +164,7 @@ body {
     padding: 20px;
     width: 300px;
     text-align: center;
-    z-index: 10000; /* 🔥 Per assegurar que està per sobre */
+    z-index: 10000;
 }
 
 .modal-content input {
