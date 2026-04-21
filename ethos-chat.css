@@ -171,3 +171,7 @@ body {
 .modal.hidden {
     display: none !important; 
 }
+
+* {
+    pointer-events: auto;
+}
