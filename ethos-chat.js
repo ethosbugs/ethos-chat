@@ -13,7 +13,7 @@ import {
   updateDoc,
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
- const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyDpls-yeDmNRoDLq4jXUCKbaiip0A9oXmQ",
   authDomain: "ethos-chat-dfe0e.firebaseapp.com",
   databaseURL: "https://ethos-chat-dfe0e-default-rtdb.europe-west1.firebasedatabase.app",
