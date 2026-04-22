@@ -1,3 +1,6 @@
+// ------------------------------
+// FIREBASE
+// ------------------------------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getFirestore,
@@ -9,7 +12,6 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyDpls-yeDmNRoDLq4jXUCKbaiip0A9oXmQ",
   authDomain: "ethos-chat-dfe0e.firebaseapp.com",
@@ -20,30 +22,32 @@ const firebaseConfig = {
   appId: "1:1033379402899:web:e0a71148c2c1e0a55e2966",
   measurementId: "G-GWK6PBTJV7"
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-const chatMessages = document.getElementById("chatMessages");
-const chatInput = document.getElementById("chatInput");
-const chatSend = document.getElementById("chatSend");
-const chatStatusEl = document.getElementById("chatStatus");
+// ------------------------------
+// ELEMENTS HTML (CORREGITS)
+// ------------------------------
+const messagesEl = document.getElementById("messages");
+const messageInput = document.getElementById("messageInput");
+const sendBtn = document.getElementById("sendBtn");
+const clearLocal = document.getElementById("clearLocal");
+const openProfile = document.getElementById("openProfile");
 
 const nameModal = document.getElementById("nameModal");
 const nameInput = document.getElementById("nameInput");
 const nameConfirm = document.getElementById("nameConfirm");
 
-const settingsBtn = document.getElementById("settingsBtn");
-const settingsPanel = document.getElementById("settingsPanel");
-const closeSettings = document.getElementById("closeSettings");
-
+const profilePanel = document.getElementById("profilePanel");
 const profileName = document.getElementById("profileName");
-const profileLastSeen = document.getElementById("profileLastSeen");
-const profileMessages = document.getElementById("profileMessages");
+const profileLast = document.getElementById("profileLast");
+const profileCount = document.getElementById("profileCount");
 const profileId = document.getElementById("profileId");
-const profileAvatar = document.getElementById("profileAvatar");
 
-const clearLocal = document.getElementById("clearLocal");
-
+// ------------------------------
+// USUARI
+// ------------------------------
 let user = JSON.parse(localStorage.getItem("ethosUser")) || null;
 
 if (!user) {
@@ -59,8 +63,7 @@ nameConfirm.addEventListener("click", () => {
     internalId: Math.random().toString(36).substring(2, 12),
     createdAt: Date.now(),
     lastSeen: Date.now(),
-    messagesSent: 0,
-    avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(name)}`
+    messagesSent: 0
   };
 
   localStorage.setItem("ethosUser", JSON.stringify(user));
@@ -71,16 +74,18 @@ nameConfirm.addEventListener("click", () => {
 function updateProfileUI() {
   if (!user) return;
   profileName.textContent = user.name;
-  profileLastSeen.textContent = new Date(user.lastSeen).toLocaleString();
-  profileMessages.textContent = user.messagesSent;
+  profileLast.textContent = new Date(user.lastSeen).toLocaleString();
+  profileCount.textContent = user.messagesSent;
   profileId.textContent = user.internalId;
-  profileAvatar.src = user.avatar;
 }
 
 updateProfileUI();
 
+// ------------------------------
+// ENVIAR MISSATGE
+// ------------------------------
 async function sendMessage() {
-  const text = chatInput.value.trim();
+  const text = messageInput.value.trim();
   if (!text || !user) return;
 
   await addDoc(collection(db, "messages"), {
@@ -94,51 +99,42 @@ async function sendMessage() {
   localStorage.setItem("ethosUser", JSON.stringify(user));
   updateProfileUI();
 
-  chatInput.value = "";
+  messageInput.value = "";
 }
 
-chatSend.addEventListener("click", sendMessage);
-chatInput.addEventListener("keydown", (e) => {
+sendBtn.addEventListener("click", sendMessage);
+messageInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendMessage();
 });
 
+// ------------------------------
+// LLEGIR MISSATGES
+// ------------------------------
 const q = query(collection(db, "messages"), orderBy("createdAt", "asc"));
 
-onSnapshot(
-  q,
-  (snapshot) => {
-    chatStatusEl.textContent = "● Online";
-    chatStatusEl.classList.remove("offline");
-    chatStatusEl.classList.add("online");
+onSnapshot(q, (snapshot) => {
+  messagesEl.innerHTML = "";
 
-    chatMessages.innerHTML = "";
+  snapshot.forEach((doc) => {
+    const msg = doc.data();
+    const div = document.createElement("div");
+    div.innerHTML = `<strong>${msg.user}:</strong> ${msg.text}`;
+    messagesEl.appendChild(div);
+  });
 
-    snapshot.forEach((doc) => {
-      const msg = doc.data();
-      const li = document.createElement("li");
-      li.classList.add("chat-message");
-
-      li.innerHTML = `<strong>${msg.user}:</strong> ${msg.text}`;
-      chatMessages.appendChild(li);
-    });
-
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  },
-  () => {
-    chatStatusEl.textContent = "● Offline";
-    chatStatusEl.classList.remove("online");
-    chatStatusEl.classList.add("offline");
-  }
-);
-
-settingsBtn.addEventListener("click", () => {
-  settingsPanel.classList.remove("hidden");
+  messagesEl.scrollTop = messagesEl.scrollHeight;
 });
 
-closeSettings.addEventListener("click", () => {
-  settingsPanel.classList.add("hidden");
+// ------------------------------
+// PERFIL
+// ------------------------------
+openProfile.addEventListener("click", () => {
+  profilePanel.classList.toggle("hidden");
 });
 
+// ------------------------------
+// CLEAR LOCAL
+// ------------------------------
 clearLocal.addEventListener("click", () => {
   localStorage.removeItem("ethosUser");
   location.reload();
