@@ -46,16 +46,20 @@
       <p><strong>ID intern:</strong> <span id="profileId"></span></p>
 
       <h3>Temes</h3>
-      <button class="theme-btn" data-theme="neon">ETHOS Neon Green</button>
-      <button class="theme-btn" data-theme="blue">ETHOS Blue Cyber</button>
-      <button class="theme-btn" data-theme="purple">ETHOS Purple Void</button>
+      <button class="theme-btn" data-theme="ethos_green">ETHOS Verd</button>
+      <button class="theme-btn" data-theme="ethos_red">ETHOS Vermell</button>
+      <button class="theme-btn" data-theme="ethos_blue">ETHOS Blau</button>
+      <button class="theme-btn" data-theme="ethos_light">Mode Clar</button>
 
-      <button id="closeProfile">Tancar</button>
+      <button id="closeProfile" onclick="document.getElementById('profilePanel').classList.add('hidden')">
+        Tancar
+      </button>
     </div>
 
   </div>
 
-  <!-- IMPORTANT: JS amb defer -->
+  <!-- JS (IMPORTANT: MÒDUL PER FIREBASE) -->
   <script type="module" src="ethos-chat.js"></script>
+
 </body>
 </html>
