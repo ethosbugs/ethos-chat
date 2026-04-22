@@ -83,3 +83,6 @@ input {
   pointer-events: auto;
 }
 
+body * {
+  outline: 1px solid red;
+}
