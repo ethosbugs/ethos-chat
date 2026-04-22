@@ -1,4 +1,4 @@
-console.log("ETHOS JS LOADED");
+console.log("ETHOS CHAT v3 LOADED");
 
 // ------------------------------
 // FIREBASE
@@ -36,66 +36,71 @@ const messageInput = document.getElementById("messageInput");
 const sendBtn = document.getElementById("sendBtn");
 const clearLocal = document.getElementById("clearLocal");
 const openProfile = document.getElementById("openProfile");
-
-const nameModal = document.getElementById("nameModal");
-const nameInput = document.getElementById("nameInput");
-const nameConfirm = document.getElementById("nameConfirm");
+const closeProfile = document.getElementById("closeProfile");
 
 const profilePanel = document.getElementById("profilePanel");
-const profileName = document.getElementById("profileName");
+const nameInput = document.getElementById("nameInput");
 const profileLast = document.getElementById("profileLast");
 const profileCount = document.getElementById("profileCount");
 const profileId = document.getElementById("profileId");
 
 // ------------------------------
-// USUARI
+// USUARI SENSE MODAL
 // ------------------------------
 let user = JSON.parse(localStorage.getItem("ethosUser")) || null;
 
-// Si no hi ha usuari → mostrar modal
-if (!user) {
-  nameModal.classList.remove("hidden");
+function checkUser() {
+  if (!user || !user.name) {
+    messageInput.disabled = true;
+    messageInput.placeholder = "Configura el teu nom a Settings";
+    sendBtn.disabled = true;
+  } else {
+    messageInput.disabled = false;
+    messageInput.placeholder = "Escriu un missatge...";
+    sendBtn.disabled = false;
+  }
 }
 
-// Confirmar nom
-nameConfirm.addEventListener("click", () => {
-  console.log("Confirmar clicat");
-
-  const name = nameInput.value.trim();
-  if (!name) return;
-
-  user = {
-    name,
-    internalId: Math.random().toString(36).substring(2, 12),
-    createdAt: Date.now(),
-    lastSeen: Date.now(),
-    messagesSent: 0
-  };
-
-  console.log("Usuari creat:", user);
-
-  localStorage.setItem("ethosUser", JSON.stringify(user));
-  updateProfileUI();
-
-  nameModal.classList.add("hidden");
-});
+checkUser();
 
 function updateProfileUI() {
   if (!user) return;
-  profileName.textContent = user.name;
   profileLast.textContent = new Date(user.lastSeen).toLocaleString();
   profileCount.textContent = user.messagesSent;
   profileId.textContent = user.internalId;
+  nameInput.value = user.name;
 }
 
 updateProfileUI();
 
 // ------------------------------
+// CANVIAR NOM
+// ------------------------------
+nameInput.addEventListener("change", () => {
+  const newName = nameInput.value.trim();
+  if (!newName) return;
+
+  user = {
+    name: newName,
+    internalId: user?.internalId || Math.random().toString(36).substring(2, 12),
+    createdAt: user?.createdAt || Date.now(),
+    lastSeen: Date.now(),
+    messagesSent: user?.messagesSent || 0
+  };
+
+  localStorage.setItem("ethosUser", JSON.stringify(user));
+  updateProfileUI();
+  checkUser();
+});
+
+// ------------------------------
 // ENVIAR MISSATGE
 // ------------------------------
 async function sendMessage() {
+  if (!user || !user.name) return;
+
   const text = messageInput.value.trim();
-  if (!text || !user) return;
+  if (!text) return;
 
   await addDoc(collection(db, "messages"), {
     user: user.name,
@@ -139,6 +144,10 @@ onSnapshot(q, (snapshot) => {
 // ------------------------------
 openProfile.addEventListener("click", () => {
   profilePanel.classList.toggle("hidden");
+});
+
+closeProfile.addEventListener("click", () => {
+  profilePanel.classList.add("hidden");
 });
 
 // ------------------------------
