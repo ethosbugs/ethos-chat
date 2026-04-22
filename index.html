@@ -4,35 +4,79 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ETHOS_CHAT</title>
+
+  <!-- Favicon / Logo ETHOS -->
+  <link rel="icon" href="https://cdn-1.webcatalog.io/catalog/hacker-typer/hacker-typer-icon.png">
+
+  <!-- CSS principal (mantens el teu, només assegura't d'afegir estils pel popup) -->
   <link rel="stylesheet" href="ethos-chat.css">
 </head>
 
-<body>
+<body class="theme-ethos_green">
 
-  <!-- Contenidor principal -->
-  <div class="chat-container">
+  <!-- POPUP LOGIN / SIGNUP -->
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-modal">
+      <img src="https://cdn-1.webcatalog.io/catalog/hacker-typer/hacker-typer-icon.png" alt="ETHOS Logo" class="auth-logo">
 
-    <!-- Panell esquerra: Xat -->
-    <div class="chat-box">
-      <h1>ETHOS_CHAT</h1>
+      <div class="auth-tabs">
+        <button id="tabLogin" class="auth-tab active">Iniciar sessió</button>
+        <button id="tabSignup" class="auth-tab">Crear compte</button>
+      </div>
 
-      <div id="messages" class="messages"></div>
+      <!-- LOGIN -->
+      <div id="loginPanel" class="auth-panel">
+        <label>Nom d'usuari</label>
+        <input type="text" id="loginName" placeholder="Nom d'usuari">
 
-      <div class="input-area">
-        <input type="text" id="messageInput" placeholder="Escriu un missatge...">
-        <button id="sendBtn">Enviar</button>
-        <button id="clearLocal">Clear local</button>
-        <button id="openProfile">Settings</button>
+        <label>Contrasenya</label>
+        <input type="password" id="loginPass" placeholder="Contrasenya">
+
+        <button id="loginBtn" class="auth-primary">Iniciar sessió</button>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="signupPanel" class="auth-panel hidden">
+        <label>Nom d'usuari</label>
+        <input type="text" id="signupName" placeholder="Nom d'usuari">
+
+        <label>Contrasenya</label>
+        <input type="password" id="signupPass" placeholder="Contrasenya">
+
+        <button id="signupBtn" class="auth-primary">Crear compte</button>
       </div>
     </div>
+  </div>
 
-    <!-- Panell dret: Perfil -->
-    <div id="profilePanel" class="profile-panel hidden">
+  <!-- CONTENIDOR PRINCIPAL ETHOS -->
+  <div class="chat-container">
+
+    <!-- Header amb logo -->
+    <header class="chat-header">
+      <div class="chat-logo">
+        <img src="https://cdn-1.webcatalog.io/catalog/hacker-typer/hacker-typer-icon.png" alt="ETHOS Logo">
+        <span>ETHOS_CHAT</span>
+      </div>
+      <button id="openProfile" class="settings-btn">Settings</button>
+    </header>
+
+    <!-- XAT -->
+    <main class="chat-main">
+      <div id="messages" class="messages"></div>
+    </main>
+
+    <!-- INPUT -->
+    <footer class="chat-footer">
+      <input type="text" id="messageInput" placeholder="Escriu un missatge...">
+      <button id="sendBtn">Enviar</button>
+      <button id="clearLocal">Clear local</button>
+    </footer>
+
+    <!-- PANEL SETTINGS -->
+    <aside id="profilePanel" class="profile-panel hidden">
       <h2>Perfil ETHOS</h2>
 
-      <p><strong>Nom:</strong></p>
-      <input type="text" id="nameInput" placeholder="Introdueix el teu nom...">
-
+      <p><strong>Usuari:</strong> <span id="profileName"></span></p>
       <p><strong>Última connexió:</strong> <span id="profileLast"></span></p>
       <p><strong>Missatges enviats:</strong> <span id="profileCount"></span></p>
       <p><strong>ID intern:</strong> <span id="profileId"></span></p>
@@ -44,12 +88,10 @@
       <button class="theme-btn" data-theme="ethos_light">Mode Clar</button>
 
       <button id="closeProfile">Tancar</button>
-    </div>
-
+    </aside>
   </div>
 
   <!-- JS -->
-  <script type="module" src="ethos-chat-v3.js"></script>
-
+  <script type="module" src="ethos-chat-v5.js"></script>
 </body>
 </html>
