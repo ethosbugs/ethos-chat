@@ -83,9 +83,6 @@ input {
   pointer-events: auto;
 }
 
-body * {
-  outline: 1px solid red;
-}
 .chat-container {
   position: relative;
   z-index: 10;
