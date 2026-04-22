@@ -27,7 +27,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // ------------------------------
-// ELEMENTS HTML (CORREGITS)
+// ELEMENTS HTML
 // ------------------------------
 const messagesEl = document.getElementById("messages");
 const messageInput = document.getElementById("messageInput");
@@ -132,63 +132,39 @@ openProfile.addEventListener("click", () => {
   profilePanel.classList.toggle("hidden");
 });
 
-/* ------------------------------
-   TEMES ETHOS DEFINITIUS
------------------------------- */
-
-/* Tema verd (per defecte) */
-body.theme-ethos_green {
-  --bg: #000;
-  --text: #00ff9f;
-  --accent: #00ff9f;
-}
-
-/* Tema vermell */
-body.theme-ethos_red {
-  --bg: #000;
-  --text: #ff4d4d;
-  --accent: #ff4d4d;
-}
-
-/* Tema blau */
-body.theme-ethos_blue {
-  --bg: #000;
-  --text: #4dc3ff;
-  --accent: #4dc3ff;
-}
-
-/* Mode clar */
-body.theme-ethos_light {
-  --bg: #ffffff;
-  --text: #000000;
-  --accent: #000000;
-}
-
-/* Aplicació de variables */
-body, .chat-container, .profile-panel, .modal-content {
-  background: var(--bg);
-  color: var(--text);
-  border-color: var(--accent);
-}
-
-button, input {
-  background: var(--bg);
-  color: var(--text);
-  border-color: var(--accent);
-}
-
-button:hover {
-  background: var(--accent);
-  color: var(--bg);
-}
-
-
-
-
 // ------------------------------
 // CLEAR LOCAL
 // ------------------------------
 clearLocal.addEventListener("click", () => {
   localStorage.removeItem("ethosUser");
   location.reload();
+});
+
+// ------------------------------
+// TEMES ETHOS DEFINITIUS
+// ------------------------------
+const themeButtons = document.querySelectorAll(".theme-btn");
+
+// Carregar tema guardat
+const savedTheme = localStorage.getItem("ethosTheme");
+if (savedTheme) {
+  document.body.classList.add(`theme-${savedTheme}`);
+}
+
+// Canviar tema
+themeButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const theme = btn.dataset.theme;
+
+    document.body.classList.remove(
+      "theme-ethos_green",
+      "theme-ethos_red",
+      "theme-ethos_blue",
+      "theme-ethos_light"
+    );
+
+    document.body.classList.add(`theme-${theme}`);
+
+    localStorage.setItem("ethosTheme", theme);
+  });
 });
