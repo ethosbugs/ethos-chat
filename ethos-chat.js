@@ -137,6 +137,7 @@ openProfile.addEventListener("click", () => {
 // ------------------------------
 clearLocal.addEventListener("click", () => {
   localStorage.removeItem("ethosUser");
+  localStorage.removeItem("ethosTheme"); // IMPORTANT: esborra tema antic
   location.reload();
 });
 
